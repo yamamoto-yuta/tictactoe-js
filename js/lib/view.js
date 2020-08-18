@@ -1,22 +1,4 @@
 /**
- * width, height用クラス
- *
- * @class WH
- */
-class WH {
-    /**
-     *Creates an instance of WH.
-     * @param {number} w - width
-     * @param {number} h - height
-     * @memberof WH
-     */
-    constructor(w, h) {
-        this.width = w;
-        this.height = h;
-    }
-}
-
-/**
  * 盤オプションクラス
  *
  * @class BoardOption
@@ -24,27 +6,22 @@ class WH {
 class BoardOption {
 
     /**
-     *Creates an instance of BoardOption.
-     * @memberof BoardOption
+     * コンストラクタ
+     * @param {int} canvasWidth - キャンバス幅
+     * @param {int} canvasHeight - キャンバス高
+     * @param {int} boardSize - 盤の大きさ
      */
-    constructor() {
-        this.canvas = new WH(500, 500);
-        this.offset = 30;
-
-        this.boardSize = this.calcBoardSize();
+    constructor(canvasWidth, canvasHeight, boardSize) {
+        this.boardSize = boardSize;
         this.cellSize = this.boardSize / OX.SIZE;
 
-        this.left = (this.canvas.width - this.boardSize) / 2;
-        this.top = (this.canvas.height - this.boardSize) / 2;
+        this.left = (canvasWidth - this.boardSize) / 2;
+        this.top = (canvasHeight - this.boardSize) / 2;
         this.right = this.left + this.boardSize;
         this.bottom = this.top + this.boardSize;
-    }
 
-    calcBoardSize() {
-        var cvMin = [this.canvas.width, this.canvas.height].reduce((a, b) => Math.min(a, b));
-        return cvMin - this.offset * 2;
+        console.log(this.boardSize);
     }
-
 }
 
 /**
@@ -60,10 +37,16 @@ class Drawer {
      * @memberof Drawer
      */
     constructor(bo) {
-        this.boardOption = bo;
-
         this.sign_o = null;
         this.sign_x = null;
+    }
+
+    /**
+     * boardOptionのセッタ
+     * @param {BoardOption} bo - 盤オプション
+     */
+    setBoardOption(bo) {
+        this.boardOption = bo;
     }
 
     /**
@@ -82,7 +65,7 @@ class Drawer {
      * @memberof Drawer
      */
     reset() {
-        createCanvas(bo.canvas.width, bo.canvas.height);
+        // createCanvas(bo.field.width, bo.field.height);
         background("green");
         this.grid();
     }
@@ -95,9 +78,9 @@ class Drawer {
     grid() {
         for (var i = 0; i < OX.SIZE + 1; i++) {
             line(this.boardOption.left, this.boardOption.top + this.boardOption.cellSize * i,
-                 this.boardOption.right, this.boardOption.top + this.boardOption.cellSize * i);
-            line(this.boardOption.left + this.boardOption.cellSize * i, this.boardOption.top, 
-                 this.boardOption.left + this.boardOption.cellSize * i, this.boardOption.bottom);
+                this.boardOption.right, this.boardOption.top + this.boardOption.cellSize * i);
+            line(this.boardOption.left + this.boardOption.cellSize * i, this.boardOption.top,
+                this.boardOption.left + this.boardOption.cellSize * i, this.boardOption.bottom);
         }
     }
 
@@ -112,11 +95,15 @@ class Drawer {
     sign(sign, x, y) {
         var img;
         switch (sign) {
-            case 'o': img = this.sign_o; break;
-            case 'x': img = this.sign_x; break;
+            case 'o':
+                img = this.sign_o;
+                break;
+            case 'x':
+                img = this.sign_x;
+                break;
         }
         image(
-            img, 
+            img,
             this.boardOption.left + x * this.boardOption.cellSize,
             this.boardOption.top + y * this.boardOption.cellSize,
             this.boardOption.cellSize, this.boardOption.cellSize);
@@ -131,14 +118,21 @@ class Drawer {
 class PositionManager {
 
     /**
-     *Creates an instance of PositionManager.
-     * @param {BoardOption} bo - 盤オプション
+     * コンストラクタ
+     * 
      * @memberof PositionManager
      */
-    constructor(bo) {
-        this.boardOption = bo;
+    constructor() {
         this.mousePos = null;
         this.pos = null;
+    }
+
+    /**
+     * boardOptionのセッタ
+     * @param {BoardOption} bo - 盤オプション
+     */
+    setBoardOption(bo) {
+        this.boardOption = bo;
     }
 
     /**
@@ -147,13 +141,13 @@ class PositionManager {
      * @memberof PositionManager
      */
     setMousePosition() {
-        this.mousePos =  {
+        this.mousePos = {
             x: mouseX,
             y: mouseY
         };
         this.setPosition();
     }
-    
+
     /**
      * マウス座標を格子座標に変換する関数
      *
@@ -165,7 +159,7 @@ class PositionManager {
             y: this.correctPosition(Math.floor((this.mousePos.y - this.boardOption.top) / this.boardOption.cellSize))
         }
     }
-    
+
     /**
      * 格子座標が範囲外だった場合に範囲内へ修正する関数
      *
