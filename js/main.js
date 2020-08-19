@@ -51,9 +51,7 @@ function _cpuTurn() {
 
 function mouseClicked() {
     pm.setMousePosition();
-    if (pm.pos.x == null || pm.pos.y == null) {
-        alert("そこには置けません！");
-    } else if (env.put(conv2dto1d(pm.pos.y, pm.pos.x))) {
+    if ((pm.pos.x != null && pm.pos.y != null) && env.put(conv2dto1d(pm.pos.y, pm.pos.x))) {
         dw.sign(OX.btos(env.current_player), pm.pos.x, pm.pos.y);
         env.changeTurn();
 
