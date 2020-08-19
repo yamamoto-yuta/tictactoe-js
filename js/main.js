@@ -18,32 +18,45 @@ function setup() {
     dw.setBoardOption(bo);
     pm.setBoardOption(bo);
 
-    console.log(bo);
-
     dw.reset();
 
-    // btnReset = createButton("Hello");
-    // btnReset.position(19, 19);
+    btnReset = createStyleButton(
+        "リセット",
+        bo.left,
+        bo.top - 100,
+        200,
+        50, [
+            new ButtonStyle('font-family', "'Kosugi Maru', sans-serif"),
+            new ButtonStyle('font-size', 24 + 'px'),
+            new ButtonStyle('color', color(255, 255, 255, 255)),
+            new ButtonStyle('background-color', color(255, 0, 0, 255)),
+            new ButtonStyle('border-radius', 100 + 'px')
+        ],
+        _reset
+    );
 
+    _cpuTurn();
+}
+
+function _reset() {
+    console.log('_reset')
+}
+
+function _cpuTurn() {
     cpu.board = env.board;
     var cpuPutPos = cpu.put();
     dw.sign(OX.btos(env.current_player), cpuPutPos.x, cpuPutPos.y);
     env.changeTurn();
-
-    console.log(env.board);
 }
 
 function mouseClicked() {
     pm.setMousePosition();
-    if (env.put(conv2dto1d(pm.pos.y, pm.pos.x))) {
+    if (pm.pos.x == null || pm.pos.y == null) {
+        alert("そこには置けません！");
+    } else if (env.put(conv2dto1d(pm.pos.y, pm.pos.x))) {
         dw.sign(OX.btos(env.current_player), pm.pos.x, pm.pos.y);
         env.changeTurn();
 
-        cpu.board = env.board;
-        var cpuPutPos = cpu.put();
-        dw.sign(OX.btos(env.current_player), cpuPutPos.x, cpuPutPos.y);
-        env.changeTurn();
-
-        console.log(env.board);
+        _cpuTurn();
     }
 }

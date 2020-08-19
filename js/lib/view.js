@@ -1,4 +1,41 @@
 /**
+ * ボタンスタイルクラス
+ */
+class ButtonStyle {
+    /**
+     * コンストラクタ
+     * @param {string} name - スタイル名
+     * @param {string} value - スタイル値
+     */
+    constructor(name, value) {
+        this.name = name;
+        this.value = value;
+    }
+}
+
+/**
+ * スタイル指定ボタンを作成する関数
+ * @param {string} name - ボタンの表示名
+ * @param {int} x - ボタンの左上のx座標
+ * @param {int} y - ボタンの左上のy座標
+ * @param {int} wid - ボタンの幅
+ * @param {int} hei - ボタンの高さ
+ * @param {array[ButtonStyle]} style - ボタンのスタイル
+ * @param {function} pressed - ボタンが押された時に呼び出される関数
+ */
+function createStyleButton(name, x, y, wid, hei, style, pressed) {
+    var button = createButton(name);
+    button.position(x, y);
+    button.size(wid, hei);
+    for (var i = 0; i < style.length; i++) {
+        button.style(style[i].name, style[i].value);
+    }
+    button.mousePressed(pressed);
+    return button;
+}
+
+
+/**
  * 盤オプションクラス
  *
  * @class BoardOption
@@ -19,8 +56,6 @@ class BoardOption {
         this.top = (canvasHeight - this.boardSize) / 2;
         this.right = this.left + this.boardSize;
         this.bottom = this.top + this.boardSize;
-
-        console.log(this.boardSize);
     }
 }
 
@@ -168,8 +203,10 @@ class PositionManager {
      * @memberof PositionManager
      */
     correctPosition(pos) {
-        if (pos < 0) pos = 0;
-        else if (pos >= OX.SIZE) pos = OX.SIZE - 1;
-        return pos;
+        if (pos < 0 || pos >= OX.SIZE) {
+            return null;
+        } else {
+            return pos;
+        }
     }
 }
