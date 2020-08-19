@@ -1,5 +1,7 @@
 const env = new TictactoeEnv();
 
+let cvn;
+
 let bo;
 let dw = new Drawer();
 let pm = new PositionManager();
@@ -16,6 +18,7 @@ function preload() {
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
+
     bo = new BoardOption(width, height, 500);
     dw.setBoardOption(bo);
     pm.setBoardOption(bo);
@@ -57,8 +60,31 @@ function _cpuTurn() {
     return env.changeTurn();
 }
 
-function mouseClicked() {
+// function mouseClicked() {
+//     pm.setMousePosition();
+//     if (!isOver && (pm.pos.x != null && pm.pos.y != null) && env.put(conv2dto1d(pm.pos.y, pm.pos.x))) {
+//         dw.sign(OX.btos(env.current_player), pm.pos.x, pm.pos.y);
+//         var result = env.changeTurn();
+//         isOver = result["isOver"];
+//         if (isOver) {
+//             dw.result(result["winner"]);
+//             return
+//         }
+
+//         result = _cpuTurn();
+//         isOver = result["isOver"];
+//         if (isOver) {
+//             dw.result(result["winner"]);
+//             return
+//         }
+//     }
+// }
+
+function touchEnded() {
+    console.log('touch');
+
     pm.setMousePosition();
+    console.log(pm.pos);
     if (!isOver && (pm.pos.x != null && pm.pos.y != null) && env.put(conv2dto1d(pm.pos.y, pm.pos.x))) {
         dw.sign(OX.btos(env.current_player), pm.pos.x, pm.pos.y);
         var result = env.changeTurn();
