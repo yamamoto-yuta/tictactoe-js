@@ -49,11 +49,13 @@ class BoardOption {
      * @param {int} boardSize - 盤の大きさ
      */
     constructor(canvasWidth, canvasHeight, boardSize) {
+        this.canvasWidth = canvasWidth;
+        this.canvasHeight = canvasHeight;
         this.boardSize = boardSize;
         this.cellSize = this.boardSize / OX.SIZE;
 
-        this.left = (canvasWidth - this.boardSize) / 2;
-        this.top = (canvasHeight - this.boardSize) / 2;
+        this.left = (this.canvasWidth - this.boardSize) / 2;
+        this.top = (this.canvasHeight - this.boardSize) / 2;
         this.right = this.left + this.boardSize;
         this.bottom = this.top + this.boardSize;
     }
@@ -74,6 +76,8 @@ class Drawer {
     constructor(bo) {
         this.sign_o = null;
         this.sign_x = null;
+
+        this.btnResult = null;
     }
 
     /**
@@ -85,7 +89,7 @@ class Drawer {
     }
 
     /**
-     * preload()関数用関数
+     * preload()関数用メソッド
      *
      * @memberof Drawer
      */
@@ -95,18 +99,22 @@ class Drawer {
     }
 
     /**
-     * 初期化関数
+     * 初期化メソッド
      *
      * @memberof Drawer
      */
     reset() {
-        // createCanvas(bo.field.width, bo.field.height);
+        clear();
+        if (this.btnResult != null) {
+            this.btnResult.remove();
+        }
+
         background("green");
         this.grid();
     }
 
     /**
-     * 格子を描写する関数
+     * 格子を描写するメソッド
      *
      * @memberof Drawer
      */
@@ -120,7 +128,7 @@ class Drawer {
     }
 
     /**
-     * OXを描写するクラス
+     * OXを描写するメソッド
      *
      * @param {string} sign - OかXか
      * @param {number} x - 格子上でのx座標
@@ -142,6 +150,45 @@ class Drawer {
             this.boardOption.left + x * this.boardOption.cellSize,
             this.boardOption.top + y * this.boardOption.cellSize,
             this.boardOption.cellSize, this.boardOption.cellSize);
+    }
+
+    /**
+     * 勝敗を描写するメソッド
+     * @param {*} winner 
+     */
+    result(winner) {
+        var text;
+        var btnColor;
+        switch (winner) {
+            case OX.O_STR:
+                text = "〇の勝ち！";
+                btnColor = color(255, 0, 0, 255);
+                break;
+
+            case OX.X_STR:
+                text = "×の勝ち！";
+                btnColor = color(78, 103, 200, 255);
+                break;
+
+            case OX.E_STR:
+                text = "引き分け！";
+                btnColor = color(150, 150, 150, 255);
+                break;
+        }
+
+        this.btnResult = createStyleButton(
+            text,
+            this.boardOption.left,
+            this.boardOption.top - 150,
+            this.boardOption.boardSize,
+            100, [
+                new ButtonStyle('font-family', "'Kosugi Maru', sans-serif"),
+                new ButtonStyle('font-size', 30 + 'px'),
+                new ButtonStyle('color', color(255, 255, 255, 255)),
+                new ButtonStyle('background-color', btnColor)
+            ],
+            null
+        );
     }
 }
 
@@ -171,7 +218,7 @@ class PositionManager {
     }
 
     /**
-     * マウス座標を取得する関数
+     * マウス座標を取得するメソッド
      *
      * @memberof PositionManager
      */
@@ -184,7 +231,7 @@ class PositionManager {
     }
 
     /**
-     * マウス座標を格子座標に変換する関数
+     * マウス座標を格子座標に変換するメソッド
      *
      * @memberof PositionManager
      */
@@ -196,7 +243,7 @@ class PositionManager {
     }
 
     /**
-     * 格子座標が範囲外だった場合に範囲内へ修正する関数
+     * 格子座標が範囲外だった場合に範囲内へ修正するメソッド
      *
      * @param {{x:number y:number}} pos - 格子座標
      * @returns {{x:number y:number}} 修正済み格子座標

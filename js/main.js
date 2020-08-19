@@ -7,6 +7,8 @@ let cpu = new Cpu(env.board, OX.X_NUM);
 
 let btnReset;
 
+let isOver = false;
+
 function preload() {
     env.reset();
     dw.preload();
@@ -23,7 +25,7 @@ function setup() {
     btnReset = createStyleButton(
         "リセット",
         bo.left,
-        bo.top - 100,
+        bo.bottom + 50,
         200,
         50, [
             new ButtonStyle('font-family', "'Kosugi Maru', sans-serif"),
@@ -39,22 +41,38 @@ function setup() {
 }
 
 function _reset() {
-    console.log('_reset')
+
+    isOver = false;
+    env.reset();
+
+    dw.reset();
+
+    _cpuTurn();
 }
 
 function _cpuTurn() {
     cpu.board = env.board;
     var cpuPutPos = cpu.put();
     dw.sign(OX.btos(env.current_player), cpuPutPos.x, cpuPutPos.y);
-    env.changeTurn();
+    return env.changeTurn();
 }
 
 function mouseClicked() {
     pm.setMousePosition();
-    if ((pm.pos.x != null && pm.pos.y != null) && env.put(conv2dto1d(pm.pos.y, pm.pos.x))) {
+    if (!isOver && (pm.pos.x != null && pm.pos.y != null) && env.put(conv2dto1d(pm.pos.y, pm.pos.x))) {
         dw.sign(OX.btos(env.current_player), pm.pos.x, pm.pos.y);
-        env.changeTurn();
+        var result = env.changeTurn();
+        isOver = result["isOver"];
+        if (isOver) {
+            dw.result(result["winner"]);
+            return
+        }
 
-        _cpuTurn();
+        result = _cpuTurn();
+        isOver = result["isOver"];
+        if (isOver) {
+            dw.result(result["winner"]);
+            return
+        }
     }
 }
