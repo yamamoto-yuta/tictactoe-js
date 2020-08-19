@@ -1,4 +1,3 @@
-
 /**
  * CPUに関するクラス
  *
@@ -30,10 +29,11 @@ class Cpu {
                 canPut.push(i);
             }
         });
+        return canPut;
 
-        var putPos = canPut[randbetween(0, canPut.length)];        
-        this.board[putPos] = this.sign;
+        // var putPos = canPut[randbetween(0, canPut.length)];
+        // this.board[putPos] = this.sign;
 
-        return conv1dto2d(putPos);
+        // return conv1dto2d(putPos);
     }
 }
