@@ -104,7 +104,7 @@ function dataLoaded() {
  */
 function trainModel() {
     const trainingOptions = {
-        epochs: 128,
+        epochs: 64,
         batchSize: 100
     }
     nn.train(trainingOptions, whileTraining, finishedTraining);
