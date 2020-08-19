@@ -16,23 +16,30 @@ class OX {
 
     static btos(b) {
         switch (b) {
-            case OX.X_BOOL: return OX.X_STR;
-            case OX.O_BOOL: return OX.O_STR;
+            case OX.X_BOOL:
+                return OX.X_STR;
+            case OX.O_BOOL:
+                return OX.O_STR;
         }
     }
 
     static bton(b) {
         switch (b) {
-            case OX.X_BOOL: return OX.X_NUM;
-            case OX.O_BOOL: return OX.O_NUM;
+            case OX.X_BOOL:
+                return OX.X_NUM;
+            case OX.O_BOOL:
+                return OX.O_NUM;
         }
     }
 
     static itos(i) {
-        switch(i) {
-            case OX.X_NUM: return OX.X_STR;
-            case OX.E_NUM: return OX.E_STR;
-            case OX.O_NUM: return OX.O_STR;
+        switch (i) {
+            case OX.X_NUM:
+                return OX.X_STR;
+            case OX.E_NUM:
+                return OX.E_STR;
+            case OX.O_NUM:
+                return OX.O_STR;
         }
     }
 }
@@ -68,27 +75,21 @@ class TictactoeEnv {
     /**
      * ターン交代を行う関数
      *
-     * @returns
+     * @returns {bool, str} - 勝負が決まったかどうか，誰が勝ったかどうか（まだ勝負が決まていない場合null）
      * @memberof TictactoeEnv
      */
     changeTurn() {
         var result = this.judgeResult();
 
         if (result.x_win) {
-            alert("X の勝ち！");
-            return true;
-        }
-        else if (result.o_win) {
-            alert("O の勝ち！");
-            return true;
-        }
-        else if (result.is_full) {
-            alert("引き分け！");
-            return true;
-        }
-        else {
+            return { "isOver": true, "winner": OX.X_STR };
+        } else if (result.o_win) {
+            return { "isOver": true, "winner": OX.O_STR };
+        } else if (result.is_full) {
+            return { "isOver": true, "winner": OX.E_STR };
+        } else {
             this.current_player = !this.current_player;
-            return false;
+            return { "isOver": false, "winner": null };
         }
     }
 
@@ -103,8 +104,7 @@ class TictactoeEnv {
         if (this.board[idx] == OX.E_NUM) {
             this.board[idx] = OX.bton(env.current_player);
             return true;
-        }
-        else {
+        } else {
             alert("そこには置けません！");
             return false;
         }
@@ -132,7 +132,7 @@ class TictactoeEnv {
             x_win |= _whoWin.x_win;
             o_win |= _whoWin.o_win;
         }
-        
+
         var diag_lr = [];
         var diag_rl = [];
         for (var i = 0; i < OX.SIZE; i++) {
@@ -144,7 +144,7 @@ class TictactoeEnv {
         x_win |= _whoWin.x_win;
         o_win |= _whoWin.o_win;
 
-        return {x_win: x_win, o_win: o_win, is_full:is_full};
+        return { x_win: x_win, o_win: o_win, is_full: is_full };
     }
 
     /**
@@ -166,6 +166,6 @@ class TictactoeEnv {
             x_win = true;
         }
 
-        return {o_win: o_win, x_win: x_win};
-    }    
+        return { o_win: o_win, x_win: x_win };
+    }
 }
