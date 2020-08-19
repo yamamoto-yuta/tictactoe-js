@@ -104,8 +104,8 @@ function dataLoaded() {
  */
 function trainModel() {
     const trainingOptions = {
-        epochs: 5,
-        batchSize: 1000
+        epochs: 128,
+        batchSize: 100
     }
     nn.train(trainingOptions, whileTraining, finishedTraining);
 }
@@ -240,10 +240,22 @@ function handleResults(error, result) {
  * @param {*} result 
  */
 function _decidePos(board, result) {
-    console.log(result);
+    // NNの計算結果からCPUが勝つ確率と引き分けになる確率を抽出
+    var probCpuWin = [];
+    var probDraw = []
+    for (var i = 0; i < result.length; i++) {
+        for (var j = 0; j < OX.SIZE; j++) {
+            if (result[i][j]['label'] == OX.itos(cpu.sign) + "win") {
+                probCpuWin.push(result[i][j]['confidence']);
+            }
+            if (result[i][j]['label'] == "draw") {
+                probDraw.push(result[i][j]['confidence']);
+            }
+        }
+    }
 
     // 駒を置く
-    var putPos = _canPut[randbetween(0, _canPut.length)];
+    var putPos = _canPut[probCpuWin.indexOf(Math.max.apply(null, probCpuWin))]; // CPUが一番勝てる確率の高い手を選択
     board[putPos] = cpu.sign;
     var cpuPutPos = conv1dto2d(putPos);
     dw.sign(OX.btos(env.current_player), cpuPutPos.x, cpuPutPos.y);
