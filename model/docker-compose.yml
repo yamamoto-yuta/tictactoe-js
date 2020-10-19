@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  latest:
+    build: .
+    image: tictactoe-js/model
+    container_name: tictactoe-js_model
+    ports:
+      - 8888:8888 # for jupyter
+      - 6006:6006 # for tensorboard
+    volumes:
+      - ./:/home/
+    tty: true
