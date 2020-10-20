@@ -1,0 +1,10 @@
+.cache/
+.config/
+.ipython/
+.jupyter/
+.keras/
+.local/
+.ipynb_checkpoints/
+__pycache__/
+
+.bash_history

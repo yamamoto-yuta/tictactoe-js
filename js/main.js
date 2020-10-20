@@ -36,13 +36,18 @@ function setup() {
 
     // NNの初期設定
     let options = {
-        dataUrl: "data/tictactoe_custom.csv",
-        inputs: ['tl', 'tm', 'tr', 'ml', 'mm', 'mr', 'bl', 'bm', 'br'],
-        outputs: ['result'],
         task: 'classification',
         debug: true
     }
-    nn = ml5.neuralNetwork(options, dataLoaded);
+    nn = ml5.neuralNetwork(options);
+
+    // 学習済みモデルを読み込み
+    const modelDetails = {
+        model: 'js/model/model.json',
+        metadata: 'js/model/model_meta.json',
+        weights: 'js/model/model.weights.bin'
+    }
+    nn.load(modelDetails, modelReady);
 }
 
 /**
@@ -92,31 +97,9 @@ function _reset() {
 }
 
 /**
- * データ前処理用関数
+ * モデル読み込み後の処理を行う関数
  */
-function dataLoaded() {
-    nn.normalizeData();
-    trainModel();
-}
-
-/**
- * 学習用関数
- */
-function trainModel() {
-    const trainingOptions = {
-        epochs: 64,
-        batchSize: 100
-    }
-    nn.train(trainingOptions, whileTraining, finishedTraining);
-}
-
-function whileTraining(epoch, logs) {
-    console.log(`Epoch: ${epoch} - loss: ${logs.loss.toFixed(2)}`);
-}
-
-function finishedTraining() {
-    console.log('done!');
-
+function modelReady() {
     // CPU先行
     _cpuTurn();
 }
