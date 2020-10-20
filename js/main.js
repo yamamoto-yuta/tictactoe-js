@@ -262,12 +262,14 @@ function _decidePos(board, result) {
                     return _canPut[probCpuLose.indexOf(Math.min.apply(null, probCpuLose))];
             }
         }
-        // CPUが一番勝てる確率の高い手を選択，勝てる確率が負ける確率と引き分けの確率より低い場合は引き分けを選択
-        if (getBestPos('cpu_win') < getBestPos('cpu_lose') && getBestPos('cpu_win') < getBestPos('draw')) {
-            return getBestPos('draw');
-        } else {
-            return getBestPos('cpu_win');
-        }
+        // // CPUが一番勝てる確率の高い手を選択，勝てる確率が負ける確率と引き分けの確率より低い場合は引き分けを選択
+        // if (getBestPos('cpu_win') < getBestPos('cpu_lose') && getBestPos('cpu_win') < getBestPos('draw')) {
+        //     return getBestPos('draw');
+        // } else {
+        //     return getBestPos('cpu_win');
+        // }
+        // CPUが一番勝てる確率の高い手を選択
+        return getBestPos('cpu_win');
     }
 
     // 駒を置く
