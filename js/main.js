@@ -93,7 +93,7 @@ function _reset() {
     dw.reset();
 
     // CPU先行
-    _cpuTurn();
+    _cpuTurn(true);
 }
 
 /**
@@ -101,7 +101,7 @@ function _reset() {
  */
 function modelReady() {
     // CPU先行
-    _cpuTurn();
+    _cpuTurn(true);
 }
 
 // function mouseClicked() {
@@ -115,7 +115,7 @@ function modelReady() {
 //             return
 //         }
 
-//         result = _cpuTurn();
+//         result = _cpuTurn(false);
 //         isOver = result["isOver"];
 //         if (isOver) {
 //             dw.result(result["winner"]);
@@ -144,7 +144,7 @@ function touchEnded() {
         }
 
         // CPUのターン
-        _cpuTurn();
+        _cpuTurn(false);
     }
 }
 
@@ -161,8 +161,10 @@ let _prob = [];
 
 /**
  * CPUのターンを制御する関数
+ * 
+ * @param {bool} isFirst 最初の一手かどうか
  */
-function _cpuTurn() {
+function _cpuTurn(isFirst) {
     // 置ける座標を取得
     cpu.board = env.board;
     _canPut = cpu.put();
@@ -170,7 +172,13 @@ function _cpuTurn() {
     // 置ける座標を１つずつ試行して，NNで勝率を計算
     _cnt = 0;
     _prob = [];
-    classify(cpu.board, _cnt);
+    if (isFirst) {
+        // 最初の一手はランダムに決める
+        _putCpu(cpu.board, randbetween(0, 8));
+    } else {
+        // それ以外はNNを利用
+        classify(cpu.board, _cnt);
+    }
 }
 
 /**
@@ -218,7 +226,7 @@ function handleResults(error, result) {
 }
 
 /**
- * 実際にCPUの駒を置く関数
+ * CPUの駒を置く場所を決定する関数
  * @param {*} board 
  * @param {*} result 
  */
@@ -226,6 +234,7 @@ function _decidePos(board, result) {
     // NNの計算結果からCPUが勝つ確率と引き分けになる確率を抽出
     var probCpuWin = [];
     var probDraw = []
+    var probCpuLose = [];
     for (var i = 0; i < result.length; i++) {
         for (var j = 0; j < OX.SIZE; j++) {
             if (result[i][j]['label'] == OX.itos(cpu.sign) + "win") {
@@ -234,11 +243,47 @@ function _decidePos(board, result) {
             if (result[i][j]['label'] == "draw") {
                 probDraw.push(result[i][j]['confidence']);
             }
+            if (result[i][j]['label'] == OX.btos(!OX.itob(cpu.sign)) + "win") {
+                probCpuLose.push(result[i][j]['confidence']);
+            }
         }
     }
 
+    // 駒の置く場所を決定
+    function decidePos() {
+        // CPUが勝つ確率，負ける確率，引き分けの確率が最大となる座標を取得
+        function getBestPos(res) {
+            switch (res) {
+                case 'cpu_win':
+                    return _canPut[probCpuWin.indexOf(Math.max.apply(null, probCpuWin))];
+                case 'draw':
+                    return _canPut[probDraw.indexOf(Math.max.apply(null, probDraw))];
+                case 'cpu_lose':
+                    return _canPut[probCpuLose.indexOf(Math.min.apply(null, probCpuLose))];
+            }
+        }
+        // // CPUが一番勝てる確率の高い手を選択，勝てる確率が負ける確率と引き分けの確率より低い場合は引き分けを選択
+        // if (getBestPos('cpu_win') < getBestPos('cpu_lose') && getBestPos('cpu_win') < getBestPos('draw')) {
+        //     return getBestPos('draw');
+        // } else {
+        //     return getBestPos('cpu_win');
+        // }
+        // CPUが一番勝てる確率の高い手を選択
+        return getBestPos('cpu_win');
+    }
+
     // 駒を置く
-    var putPos = _canPut[probCpuWin.indexOf(Math.max.apply(null, probCpuWin))]; // CPUが一番勝てる確率の高い手を選択
+    _putCpu(board, decidePos());
+}
+
+/**
+ * 実際にCPUの駒を置く関数
+ * 
+ * @param {*} board - 盤情報
+ * @param {int} putPos - 駒を置く場所
+ */
+function _putCpu(board, putPos) {
+    // 駒を置く
     board[putPos] = cpu.sign;
     var cpuPutPos = conv1dto2d(putPos);
     dw.sign(OX.btos(env.current_player), cpuPutPos.x, cpuPutPos.y);

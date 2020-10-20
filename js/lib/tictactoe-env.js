@@ -42,6 +42,15 @@ class OX {
                 return OX.O_STR;
         }
     }
+
+    static itob(i) {
+        switch (i) {
+            case OX.X_NUM:
+                return OX.X_BOOL;
+            case OX.O_NUM:
+                return OX.O_BOOL;
+        }
+    }
 }
 
 

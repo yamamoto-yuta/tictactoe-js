@@ -1,20 +1,14 @@
 // NN
 let nn;
 
+// 使用するモデル
+let model = model_01;
+
 /**
  * セットアップ関数
  */
 function setup() {
-    // NNの初期設定
-    let options = {
-        dataUrl: "data/tictactoe_custom.csv",
-        inputs: ['tl', 'tm', 'tr', 'ml', 'mm', 'mr', 'bl', 'bm', 'br'],
-        outputs: ['result'],
-        task: 'classification',
-        debug: true
-    }
-
-    nn = ml5.neuralNetwork(options, dataLoaded);
+    nn = ml5.neuralNetwork(model.options, dataLoaded);
 }
 
 /**
@@ -30,11 +24,7 @@ function dataLoaded() {
  * 学習用関数
  */
 function trainModel() {
-    const trainingOptions = {
-        epochs: 64,
-        batchSize: 100
-    }
-    nn.train(trainingOptions, whileTraining, finishedTraining);
+    nn.train(model.trainingOptions, whileTraining, finishedTraining);
 }
 
 function whileTraining(epoch, logs) {
