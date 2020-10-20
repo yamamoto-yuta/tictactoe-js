@@ -234,6 +234,7 @@ function _decidePos(board, result) {
     // NNの計算結果からCPUが勝つ確率と引き分けになる確率を抽出
     var probCpuWin = [];
     var probDraw = []
+    var probCpuLose = [];
     for (var i = 0; i < result.length; i++) {
         for (var j = 0; j < OX.SIZE; j++) {
             if (result[i][j]['label'] == OX.itos(cpu.sign) + "win") {
@@ -242,11 +243,35 @@ function _decidePos(board, result) {
             if (result[i][j]['label'] == "draw") {
                 probDraw.push(result[i][j]['confidence']);
             }
+            if (result[i][j]['label'] == OX.btos(!OX.itob(cpu.sign)) + "win") {
+                probCpuLose.push(result[i][j]['confidence']);
+            }
+        }
+    }
+
+    // 駒の置く場所を決定
+    function decidePos() {
+        // CPUが勝つ確率，負ける確率，引き分けの確率が最大となる座標を取得
+        function getBestPos(res) {
+            switch (res) {
+                case 'cpu_win':
+                    return _canPut[probCpuWin.indexOf(Math.max.apply(null, probCpuWin))];
+                case 'draw':
+                    return _canPut[probDraw.indexOf(Math.max.apply(null, probDraw))];
+                case 'cpu_lose':
+                    return _canPut[probCpuLose.indexOf(Math.min.apply(null, probCpuLose))];
+            }
+        }
+        // CPUが一番勝てる確率の高い手を選択，勝てる確率が負ける確率と引き分けの確率より低い場合は引き分けを選択
+        if (getBestPos('cpu_win') < getBestPos('cpu_lose') && getBestPos('cpu_win') < getBestPos('draw')) {
+            return getBestPos('draw');
+        } else {
+            return getBestPos('cpu_win');
         }
     }
 
     // 駒を置く
-    _putCpu(board, _canPut[probCpuWin.indexOf(Math.max.apply(null, probCpuWin))]); // CPUが一番勝てる確率の高い手を選択
+    _putCpu(board, decidePos());
 }
 
 /**
