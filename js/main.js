@@ -32,8 +32,8 @@ function preload() {
  */
 function setup() {
 
-    console.log(navigator.userAgent);
-    console.log(navigator.platform);
+    console.log(Number.MAX_VALUE);
+    console.log(Number.MIN_VALUE);
 
     // キャンバスを描写
     _initView();
