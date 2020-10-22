@@ -249,6 +249,14 @@ function _decidePos(board, result) {
         }
     }
 
+    console.log('probCpuWin');
+    console.log(probCpuWin);
+    console.log('probDraw');
+    console.log(probDraw);
+    console.log('probCpuLose');
+    console.log(probCpuLose);
+    console.log('---')
+
     // 駒の置く場所を決定
     function decidePos() {
         // CPUが勝つ確率，負ける確率，引き分けの確率が最大となる座標を取得
