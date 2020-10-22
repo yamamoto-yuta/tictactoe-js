@@ -31,6 +31,10 @@ function preload() {
  * セットアップ関数
  */
 function setup() {
+
+    console.log(navigator.userAgent);
+    console.log(navigator.platform);
+
     // キャンバスを描写
     _initView();
 
@@ -212,9 +216,9 @@ function handleResults(error, result) {
         return;
     }
 
-    for (var i = 0; i < 3; i++) {
-        console.log(result[i].label, result[i].confidence);
-    }
+    // for (var i = 0; i < 3; i++) {
+    //     console.log(result[i].label, result[i].confidence);
+    // }
 
     // NNの計算結果を格納
     _prob.push(result);
