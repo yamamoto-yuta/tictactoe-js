@@ -211,7 +211,10 @@ function handleResults(error, result) {
         console.error(error);
         return;
     }
-    console.log(result);
+
+    for (var i = 0; i < 3; i++) {
+        console.log(result[i].label, result[i].confidence);
+    }
 
     // NNの計算結果を格納
     _prob.push(result);
