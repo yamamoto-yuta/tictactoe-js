@@ -114,7 +114,7 @@ class TictactoeEnv {
             this.board[idx] = OX.bton(env.current_player);
             return true;
         } else {
-            alert("そこには置けません！");
+            // alert("そこには置けません！");
             return false;
         }
     }
