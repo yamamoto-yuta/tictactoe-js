@@ -211,6 +211,8 @@ function handleResults(error, result) {
         console.error(error);
         return;
     }
+    console.log(result);
+
     // NNの計算結果を格納
     _prob.push(result);
     // 盤を元の状態に戻す
@@ -249,13 +251,13 @@ function _decidePos(board, result) {
         }
     }
 
-    console.log('probCpuWin');
-    console.log(probCpuWin);
-    console.log('probDraw');
-    console.log(probDraw);
-    console.log('probCpuLose');
-    console.log(probCpuLose);
-    console.log('---')
+    // console.log('probCpuWin');
+    // console.log(probCpuWin);
+    // console.log('probDraw');
+    // console.log(probDraw);
+    // console.log('probCpuLose');
+    // console.log(probCpuLose);
+    // console.log('---')
 
     // 駒の置く場所を決定
     function decidePos() {
