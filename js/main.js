@@ -212,9 +212,9 @@ function handleResults(error, result) {
         return;
     }
 
-    for (var i = 0; i < 3; i++) {
-        console.log(result[i].label, result[i].confidence);
-    }
+    // for (var i = 0; i < 3; i++) {
+    //     console.log(result[i].label, result[i].confidence);
+    // }
 
     // NNの計算結果を格納
     _prob.push(result);
@@ -275,6 +275,10 @@ function _decidePos(board, result) {
                     return _canPut[probCpuLose.indexOf(Math.min.apply(null, probCpuLose))];
             }
         }
+
+        console.log(Math.max.apply(null, [1, 0, 3, 2]));
+        console.log([1, 0, 3, 2].indexOf(Math.max.apply(null, [1, 0, 3, 2])));
+
         // // CPUが一番勝てる確率の高い手を選択，勝てる確率が負ける確率と引き分けの確率より低い場合は引き分けを選択
         // if (getBestPos('cpu_win') < getBestPos('cpu_lose') && getBestPos('cpu_win') < getBestPos('draw')) {
         //     return getBestPos('draw');
