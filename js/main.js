@@ -213,7 +213,10 @@ function handleResults(error, result) {
     }
 
     for (var i = 0; i < 3; i++) {
-        console.log(result[i].label, result[i].confidence, result[i].confidence.toFixed(20));
+        for (var key in result[i]) {
+            console.log(key, result[i][key]);
+        }
+        console.log(result[i].confidence * 10000000000.0);
     }
 
     // NNの計算結果を格納
